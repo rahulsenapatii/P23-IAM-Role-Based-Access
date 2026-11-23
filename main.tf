@@ -39,3 +39,23 @@ resource "aws_iam_instance_profile" "profile" {
 
   role = aws_iam_role.ec2_s3_role.name
 }
+
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023.*-x86_64"]
+  }
+}
+
+resource "aws_instance" "project23_ec2" {
+  ami                  = data.aws_ami.amazon_linux.id
+  instance_type        = "t2.micro"
+  iam_instance_profile = aws_iam_instance_profile.profile.name
+
+  tags = {
+    Name = "project23-ec2-rahul"
+  }
+}
